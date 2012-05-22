@@ -1,4 +1,4 @@
-require 'portable_hole/request'
+require_relative '../lib/request'
 # AWS - Amazon Web Service
 # These are the items that are needed for a AWS Request:
 # 
@@ -12,11 +12,11 @@ describe PortableHole::Request do
     
   end
   
-  it "creates a Signature" do
+  it "creates Signature" do
     
   end
   
-  it "creates a Time Stamp" do
+  it "creates Time Stamp" do
     
   end
   
