@@ -7,24 +7,24 @@ require_relative '../lib/request'
 # Time Stamp
 # Date
 
-describe PortableHole do
-  it "has an AWS Access Key ID" do
+describe PortableHole::Request do
+  it "holds a AWS Access Key ID" do
     
   end
   
-  it "has a Signature" do
+  it "creates Signature" do
     
   end
   
-  it "has a Time Stamp" do
+  it "creates Time Stamp" do
     
   end
   
-  it "has a Date" do
+  it "knows the Date" do
     
   end
   
-  it "creates a Request" do
+  it "signs a Request" do
     
   end
   
