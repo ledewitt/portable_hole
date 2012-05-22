@@ -8,7 +8,7 @@ require_relative '../lib/request'
 # Date
 
 describe PortableHole::Request do
-  it "holds a AWS Access Key ID" do
+  it "uses an AWS Access Key ID" do
     
   end
   
