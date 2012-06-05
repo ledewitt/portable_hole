@@ -43,10 +43,17 @@ describe PortableHole::Request do
     )
   end
   
-  # it "adds a A... header" do
-  #   # TODO: request.add_a..._header(AWS_KEY, AWS_SECRET)
-  # end
-  # 
+  it "adds an Authorization request header" do
+    aws_key = "aws_key"
+    aws_secret = "aws_secret"
+    signature = "signature"
+    request.add_authentication_header(aws_key, aws_secret)
+    
+    request.headers["Authorization"].should eq(
+      "AWS #{aws_key}:#{signature}"
+    )
+  end
+  
   # it "signs a Request" do
   #   # TODO: request.sign(AWS_KEY, AWS_SECRET, clock)
   # end
