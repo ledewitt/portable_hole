@@ -1,4 +1,4 @@
-require_relative '../lib/request'
+require 'portable_hole/request'
 # AWS - Amazon Web Service
 # These are the items that are needed for a AWS Request:
 # 
