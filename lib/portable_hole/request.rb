@@ -20,6 +20,14 @@ module PortableHole
       headers["Date"] = clock.now.strftime(TIMESTAMP_FORMAT)
     end
     
+    def add_authentication_header(aws_key, aws_secret)
+      headers["Authorization"] = "AWS #{aws_key}:#{sign(aws_key, aws_secret, clock = Time)}"
+    end
+    
+    def sign(aws_key, aws_clock, clock = Time)
+      signature = "bWq2s1WEIj+Ydj0vQ697zp+IXMU="
+    end
+    
     # def sign(...)
     #   # TODO: add_date_header(...)
     #   #       add_a..._header(...)

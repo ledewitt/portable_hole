@@ -41,17 +41,26 @@ describe PortableHole::Request do
     request.headers["Date"].should eq(
       clock.strftime(PortableHole::Request::TIMESTAMP_FORMAT)
     )
+    
+    p headers
   end
   
-  it "adds an Authorization request header" do
-    aws_key = "aws_key"
+  it "adds an Authorization header" do
+    aws_key = "AKIAIOSFODNN7"
     aws_secret = "aws_secret"
-    signature = "signature"
-    request.add_authentication_header(aws_key, aws_secret)
-    
+    signature = "bWq2s1WEIj+Ydj0vQ697zp+IXMU="
+    request.add_authentication_header(aws_key, aws_secret)    
     request.headers["Authorization"].should eq(
       "AWS #{aws_key}:#{signature}"
     )
+  end
+  
+  it "signs a Request" do
+    aws_key = "AKIAIOSFODNN7"
+    aws_secret = "aws_secret"
+    signature = "bWq2s1WEIj+Ydj0vQ697zp+IXMU="
+    clock = TestClock.new(Time.now)
+    request.sign(aws_key, aws_secret, clock).should eq(signature)
   end
   
   # it "signs a Request" do
