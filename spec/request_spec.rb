@@ -22,20 +22,15 @@ class TestClock
 end
 
 describe PortableHole::Request do
-  let(:url)     { "http://example.com" }
-  let(:verb)    { "GET" }
-  let(:content) { nil }
-  let(:headers) { {"Content-Size" => 0} }
-  let(:request) { PortableHole::Request.new(url, verb, content, headers) }
-  let(:aws_key) { "AKIAIOSFODNN7" }
-  let(:aws_secret) { "aws_secret" }
-  let(:signature) { "bWq2s1WEIj+Ydj0vQ697zp+IXMU=" }
-  let(:clock) { TestClock.new(Time.now) }  
-  
-  signature = ""
-  
-  aws_secret = "aws_secret"
-  aws_key = ""
+  let(:url)        { "http://example.com" }
+  let(:verb)       { "GET" }
+  let(:content)    { nil }
+  let(:headers)    { {"Content-Size" => 0} }
+  let(:request)    { PortableHole::Request.new(url, verb, content, headers) }
+  let(:aws_key)    { "AKIAIOSFODNN7EXAMPLE" }
+  let(:aws_secret) { "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY" }
+  let(:signature)  { "bWq2s1WEIj+Ydj0vQ697zp+IXMU=" }
+  let(:clock)      { TestClock.new(Time.now) }  
 
   it "stores a URL, a verb, some content, and some header" do
     request.url.should     eq(url)
@@ -53,18 +48,11 @@ describe PortableHole::Request do
   
   it "adds an Authorization header" do
     request.sign(aws_key, aws_secret, clock)    
-    request.headers["Authorization"].should eq( "AWS #{aws_key}:#{signature}")
+    request.headers["Authorization"].should eq("AWS #{aws_key}:#{signature}")
   end
   
   # it "signs a Request" do
-  #   aws_key = "AKIAIOSFODNN7"
-  #   aws_secret = "aws_secret"
-  #   signature = "bWq2s1WEIj+Ydj0vQ697zp+IXMU="
-  #   clock = TestClock.new(Time.now)
-  #   request.sign(aws_key, aws_secret, clock).should eq(signature)
+  #   TODO IF: Adding the Authorization header was insufficent
   # end
   
-  # it "signs a Request" do
-  #   # TODO: request.sign(AWS_KEY, AWS_SECRET, clock)
-  # end
 end

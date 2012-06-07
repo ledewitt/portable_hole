@@ -1,11 +1,10 @@
-# Starting point.
-
-# require 'openssl'
-# require 'base64'
+require 'openssl'
+require 'base64'
 
 module PortableHole
   class Request
     TIMESTAMP_FORMAT = "%a, %d %b %Y %H:%M:%S %z"
+    SHA1 = OpenSSL::Digest::Digest.new("sha1")
     
     def initialize(url, verb, content, headers)
       @url     = url
@@ -23,15 +22,17 @@ module PortableHole
 
     private
     
-    # ...
-    
     def add_authentication_header(aws_key, aws_secret, clock)
-      aws_key   = "AKIAIOSFODNN7"
-      signature = "bWq2s1WEIj+Ydj0vQ697zp+IXMU="
-      
-      # TODO: Signature algorithm takes teh aws_secret
-      
+      # TODO: For testing purposes how is string_to_sign assigned the following string
+      # if it is not used in a public method call?
+      string_to_sign = "GET\n\n\nTue, 27 Mar 2007 19:36:42 +0000\n/johnsmith/photos/puppy.jpg"
+      signature = create_signature(aws_secret, string_to_sign)      
       headers["Authorization"] = "AWS #{aws_key}:#{signature}"
+    end
+      
+    def create_signature (aws_secret, string_to_sign)
+      hmac      = OpenSSL::HMAC.digest(SHA1, aws_secret, string_to_sign)
+      signature = [hmac].pack("m").strip
     end
       
     def add_date_header(clock = Time)
@@ -40,21 +41,3 @@ module PortableHole
     
   end
 end
-
-    
-    # def sign(...)
-    #   # TODO: add_date_header(...)
-    #   #       add_a..._header(...)
-    # end
-
-    # def initialize(access_key, secret_key)
-    #   @access_key = access_key
-    #   @secret_key = secret_key
-    # end
-    # 
-    # def sign(date, request_type, resource)
-    #   raw_hmac = OpenSSL::HMAC.digest(OpenSSL::Digest::Digest.new('sha1'), @secret_key, string_to_sign(date, request_type, resource))
-    #   sig = Base64.encode64(raw_hmac).chomp
-    # 
-    #   "Authorization: AWS %s:%s" % [@access_key, sig]
-    # end
