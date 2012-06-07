@@ -16,17 +16,31 @@ module PortableHole
     
     attr_reader :url, :verb, :content, :headers
     
+    def sign(aws_key, aws_secret, clock = Time)
+      add_authentication_header(aws_key, aws_secret, clock)
+      add_date_header(clock)
+    end
+
+    private
+    
+    # ...
+    
+    def add_authentication_header(aws_key, aws_secret, clock)
+      aws_key   = "AKIAIOSFODNN7"
+      signature = "bWq2s1WEIj+Ydj0vQ697zp+IXMU="
+      
+      # TODO: Signature algorithm takes teh aws_secret
+      
+      headers["Authorization"] = "AWS #{aws_key}:#{signature}"
+    end
+      
     def add_date_header(clock = Time)
       headers["Date"] = clock.now.strftime(TIMESTAMP_FORMAT)
     end
     
-    def add_authentication_header(aws_key, aws_secret)
-      headers["Authorization"] = "AWS #{aws_key}:#{sign(aws_key, aws_secret, clock = Time)}"
-    end
-    
-    def sign(aws_key, aws_clock, clock = Time)
-      signature = "bWq2s1WEIj+Ydj0vQ697zp+IXMU="
-    end
+  end
+end
+
     
     # def sign(...)
     #   # TODO: add_date_header(...)
@@ -44,8 +58,3 @@ module PortableHole
     # 
     #   "Authorization: AWS %s:%s" % [@access_key, sig]
     # end
-    private
-    
-    # ...
-  end
-end
