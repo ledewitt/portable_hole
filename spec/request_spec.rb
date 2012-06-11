@@ -10,7 +10,7 @@ require 'portable_hole/request'
 # Date
 
 describe PortableHole::Request do
-  let(:url)            { "/johnsmith/photos/puppy.jpg" }
+  let(:url)            { "http://johnsmith.s3.amazonaws.com/photos/puppy.jpg" }
   let(:verb)           { "GET" }
   let(:content)        { nil }
   let(:headers)        { {"Content-Size" => 0} }
