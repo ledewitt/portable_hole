@@ -60,8 +60,15 @@ module PortableHole
         resource << "/#{$1[0..-2]}"
       end
       resource << uri.request_uri
-      # TODO: handle subresource
+      if uri.query
+        resource << subresource(uri)
+      end
       resource
+    end
+    
+    def subresource(uri)
+      q = uri.query.split("&").sort.join("&")
+      p "?#{q}"
     end
   end
 end

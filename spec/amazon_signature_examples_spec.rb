@@ -31,4 +31,14 @@ describe "Amazon signature examples" do
         "Content-Length" => 94328 }
     ).should eq("MyyxeRY7whkBe+bq8fHCL/2kKUg=")
   end
+  
+  it "matches with a standard List request of the contents of a bucket" do
+    request_to_signature(
+      Time.utc(2007, 3, 27, 19, 42, 41),
+      "http://johnsmith.s3.amazonaws.com/?prefix=photos&max-keys=50&marker=puppy",
+      "GET",
+       nil,
+       { }
+    ).should eq("htDYFYduRNen8P9ZfE/s9SuKy0U=")
+  end
 end
