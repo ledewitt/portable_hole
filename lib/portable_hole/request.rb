@@ -1,20 +1,21 @@
 require 'openssl'
 require 'base64'
+require "uri"
 
 module PortableHole
   class Request
+    HOST_URL         = "s3.amazonaws.com"
     TIMESTAMP_FORMAT = "%a, %d %b %Y %H:%M:%S %z"
-    SHA1 = OpenSSL::Digest::Digest.new("sha1")
+    SHA1             = OpenSSL::Digest::Digest.new("sha1")
     
-    def initialize(url, verb, content_md5, content_type, headers)
-      @url          = url
-      @verb         = verb
-      @content_md5  = content_md5
-      @content_type = content_type
-      @headers      = headers
+    def initialize(url, verb, content = nil, headers = { })
+      @url     = url
+      @verb    = verb
+      @content = content
+      @headers = headers
     end
     
-    attr_reader :url, :verb, :content_md5, :content_type, :headers
+    attr_reader :url, :verb, :content, :headers
     
     def sign(aws_key, aws_secret, clock = Time)
       add_date_header(clock)
@@ -22,9 +23,7 @@ module PortableHole
     end
 
     def add_authorization_header(aws_key, aws_secret)
-      string_to_sign = "#{@verb}\n#{@content_md5}\n#{@content_type}\n#{@headers["Date"]}\n#{@url}"
-      signature = create_signature(aws_secret, string_to_sign)      
-      headers["Authorization"] = "AWS #{aws_key}:#{signature}"
+      headers["Authorization"] = "AWS #{aws_key}:#{signature(aws_secret)}"
     end
 
     def add_date_header(clock = Time)
@@ -32,11 +31,37 @@ module PortableHole
     end
 
     private
-          
-    def create_signature (aws_secret, string_to_sign)
-      hmac      = OpenSSL::HMAC.digest(SHA1, aws_secret, string_to_sign)
-      signature = [hmac].pack("m").strip
+  
+    def signature(aws_secret)
+      hmac = OpenSSL::HMAC.digest(SHA1, aws_secret, string_to_sign)
+      [hmac.force_encoding("UTF-8")].pack("m").strip
     end
-      
+    
+    def string_to_sign
+      string_to_sign = [ verb,
+                         content_md5,
+                         headers["Content-Type"],
+                         headers["Date"] ]
+      # TODO: handle AMZ headers
+      string_to_sign << canonicalized_resource_element
+      string_to_sign.join("\n")
+    end
+    
+    def content_md5
+      if content
+        # TODO:  hash content
+      end
+    end
+    
+    def canonicalized_resource_element
+      resource = ""
+      uri      = URI(url)
+      if uri.host =~ /\A((?:[^.]+\.)+)#{Regexp.escape HOST_URL}\z/
+        resource << "/#{$1[0..-2]}"
+      end
+      resource << uri.request_uri
+      # TODO: handle subresource
+      resource
+    end
   end
 end

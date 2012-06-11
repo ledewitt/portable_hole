@@ -1,3 +1,5 @@
+require "spec_helper"
+
 require 'portable_hole/request'
 # AWS - Amazon Web Service
 # These are the items that are needed for a AWS Request:
@@ -6,20 +8,6 @@ require 'portable_hole/request'
 # Signature - Caculated by using secret access key
 # Time Stamp
 # Date
-
-class TestClock
-  def initialize(time)
-    @time = time
-  end
-  
-  def now
-    self
-  end
-  
-  def strftime(*args)
-    @time.strftime(*args)
-  end
-end
 
 describe PortableHole::Request do
   let(:url)            { "/johnsmith/photos/puppy.jpg" }
