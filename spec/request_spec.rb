@@ -12,10 +12,9 @@ require 'portable_hole/request'
 describe PortableHole::Request do
   let(:url)            { "/johnsmith/photos/puppy.jpg" }
   let(:verb)           { "GET" }
-  let(:content_md5)    { nil }
-  let(:content_type)   { nil }
+  let(:content)        { nil }
   let(:headers)        { {"Content-Size" => 0} }
-  let(:request)        { PortableHole::Request.new(url, verb, content_md5, content_type, headers) }
+  let(:request)        { PortableHole::Request.new(url, verb, content, headers) }
   let(:aws_key)        { "AKIAIOSFODNN7EXAMPLE" }
   let(:aws_secret)     { "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY" }
   let(:signature)      { "bWq2s1WEIj+Ydj0vQ697zp+IXMU=" }
@@ -24,8 +23,7 @@ describe PortableHole::Request do
   it "stores a URL, a verb, some content, and some header" do
     request.url.should          eq(url)
     request.verb.should         eq(verb)
-    request.content_md5.should  be_nil
-    request.content_type.should be_nil
+    request.content.should      be_nil
     request.headers.should      eq(headers)
   end
   
