@@ -1,12 +1,14 @@
+require 'net/http'
+
 module PortableHole
   class UserAgent
     
-    def initialize
-      @speak = "Hello"
+    def initialize(request)
+      @request = request
     end
     
-    def talk
-      @speak
+    def send
+      # @request => to website
     end
     
   end  

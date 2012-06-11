@@ -31,7 +31,7 @@ describe PortableHole::Request do
   let(:aws_key)        { "AKIAIOSFODNN7EXAMPLE" }
   let(:aws_secret)     { "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY" }
   let(:signature)      { "bWq2s1WEIj+Ydj0vQ697zp+IXMU=" }
-  let(:clock)          { TestClock.new(Time.gm(2007, "mar",27,19,36,42)) }
+  let(:clock)          { TestClock.new(Time.utc(2007, "mar",27,19,36,42)) }
 
   it "stores a URL, a verb, some content, and some header" do
     request.url.should          eq(url)
