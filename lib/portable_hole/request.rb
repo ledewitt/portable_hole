@@ -59,17 +59,18 @@ module PortableHole
       if uri.host =~ /\A((?:[^.]+\.)+)#{Regexp.escape HOST_URL}\z/
         resource << "/#{$1[0..-2]}"
       end
-      resource << uri.request_uri
+      
       if uri.query
         resource << subresource(uri)
+      else
+        resource << uri.request_uri
       end
-      resource
     end
     
     def subresource(uri)
       q = uri.query.split("&").sort.join("&")
-      p "?#{q}"
-      # TODO: Get rid of the print statement.
+      # TODO: Get rid of the print statement keep return value.
+      uri.path << "?#{q}"
     end
   end
 end

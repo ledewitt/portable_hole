@@ -32,7 +32,7 @@ describe "Amazon signature examples" do
     ).should eq("MyyxeRY7whkBe+bq8fHCL/2kKUg=")
   end
   
-  # TODO: Query Issuess need to be figured out in Request.rb.
+  # # TODO: Query Issuess need to be figured out in Request.rb.
   # it "matches with a standard List request for the contents of a bucket" do
   #   request_to_signature(
   #     Time.utc(2007, 3, 27, 19, 42, 41),
@@ -43,14 +43,15 @@ describe "Amazon signature examples" do
   #   ).should eq("htDYFYduRNen8P9ZfE/s9SuKy0U=")
   # end
   
-  # it "matches with a standard Fetch request for the a bucket ('johnsmith')"
-  # request_to_signature(
-  #   Time.utc(2007, 3, 27, 19, 44, 46),
-  #   "http://johnsmith.s3.amazonaws.com/?acl",
-  #   "GET",
-  #    nil,
-  #    { }
-  # ).should eq("c2WLPFtWHVgbEmeEG93a4cG37dM=")
+  it "matches with a standard Fetch request for the a bucket ('johnsmith')" do
+    request_to_signature(
+      Time.utc(2007, 3, 27, 19, 44, 46),
+      "http://johnsmith.s3.amazonaws.com/?acl",
+      "GET",
+       nil,
+      { }
+    ).should eq("c2WLPFtWHVgbEmeEG93a4cG37dM=")
+  end
   
   # # TODO: !!!ALERT SPECIAL CASE!!! using x-amx-date method adjust the test
   # it "matches with a standard DELETE request" do
