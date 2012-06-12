@@ -69,6 +69,7 @@ module PortableHole
     def subresource(uri)
       q = uri.query.split("&").sort.join("&")
       p "?#{q}"
+      # TODO: Get rid of the print statement.
     end
   end
 end
