@@ -4,9 +4,24 @@ require "uri"
 
 module PortableHole
   class Request
-    HOST_URL         = "s3.amazonaws.com"
-    TIMESTAMP_FORMAT = "%a, %d %b %Y %H:%M:%S %z"
-    SHA1             = OpenSSL::Digest::Digest.new("sha1")
+    HOST_URL          = "s3.amazonaws.com"
+    TIMESTAMP_FORMAT  = "%a, %d %b %Y %H:%M:%S %z"
+    SHA1              = OpenSSL::Digest::Digest.new("sha1")
+    ALLOWED_RESOURCES = [ "acl",
+                          "lifecycle",
+                          "location",
+                          "logging",
+                          "notification",
+                          "partNumber",
+                          "policy",
+                          "requestPayment",
+                          "torrent",
+                          "uploadId",
+                          "uploads",
+                          "versionId",
+                          "versioning",
+                          "versions", 
+                          "website" ]
     
     def initialize(url, verb, content = nil, headers = { })
       @url     = url
@@ -68,9 +83,19 @@ module PortableHole
     end
     
     def subresource(uri)
-      q = uri.query.split("&").sort.join("&")
-      # TODO: Get rid of the print statement keep return value.
-      uri.path << "?#{q}"
+      q = uri.query.split("&")
+      
+      cleaned_query = q.find_all do | resource |
+        ALLOWED_RESOURCES.include? resource[/\A[^=]+/]
+      end
+
+      final_query = cleaned_query.sort.join("&")
+
+      if final_query != ""  # <==== NOT IDEAL!!!!
+        uri.path << "?#{final_query}"
+      else
+        "/"
+      end
     end
   end
 end
