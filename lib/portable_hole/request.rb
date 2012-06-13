@@ -91,10 +91,10 @@ module PortableHole
 
       final_query = cleaned_query.sort.join("&")
 
-      if final_query != ""  # <==== NOT IDEAL!!!!
-        uri.path << "?#{final_query}"
-      else
+      if final_query.empty?
         "/"
+      else
+        uri.path << "?#{final_query}"
       end
     end
   end
