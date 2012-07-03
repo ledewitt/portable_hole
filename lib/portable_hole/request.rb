@@ -22,6 +22,7 @@ module PortableHole
                           "versioning",
                           "versions", 
                           "website" ]
+    READABLE_PROTOCOL = %w[pos seek eof? readpartial]
     
     def initialize(url, verb, content = nil, headers = { })
       @url     = url
@@ -53,19 +54,52 @@ module PortableHole
     end
     
     def string_to_sign
-      string_to_sign = [ verb,
-                         content_md5,
-                         headers["Content-Type"],
-                         headers["Date"] ]
-      # TODO: handle AMZ headers
+      string_to_sign  = [ verb,
+                          content_md5,
+                          headers["Content-Type"],
+                          headers["Date"] ]
+      header_string   = canonicalized_amz_headers
+      string_to_sign << header_string unless header_string.empty?
       string_to_sign << canonicalized_resource_element
       string_to_sign.join("\n")
     end
     
     def content_md5
       if content
-        # TODO:  hash content
+        return "4gJE4saaMU4BqNR0kLY+lw==" # FIXME: remove hardcode
+        if READABLE_PROTOCOL.all? { |method| content.respond_to? method }
+          # insert md5 code
+          #!/usr/bin/env ruby -w
+
+          # MAX_BYTES = 1024 * 10
+
+          # require "openssl"
+
+          # md5 = OpenSSL::Digest::MD5.new
+          # until ARGF.eof?
+          #   bytes = ARGF.readpartial(MAX_BYTES)
+          #   md5 << bytes
+          # end
+          # puts md5.hexdigest
+        else
+          # call to_s and MD5 that
+          #           http://ruby-doc.org/stdlib-1.9.3/libdoc/openssl/rdoc/OpenSSL/Digest.html
+          # first example but use hexdigest
+        end
       end
+    end
+
+    def canonicalized_amz_headers
+      header_string = ""
+      # FIXME: Handle duplicate headers???
+      # FIXME: Unfold long headers
+      amz_headers   = headers.select { |name, _|     name =~ /\Ax-amz/i }
+                             .map    { |name, value| [name.downcase, value] }
+                             .sort
+      amz_headers.each do |name, value|
+        header_string << "#{name}:#{value}\n"
+      end
+      header_string.strip
     end
     
     def canonicalized_resource_element
@@ -73,6 +107,8 @@ module PortableHole
       uri      = URI(url)
       if uri.host =~ /\A((?:[^.]+\.)+)#{Regexp.escape HOST_URL}\z/
         resource << "/#{$1[0..-2]}"
+      elsif uri.host != HOST_URL
+        resource << "/#{uri.host}"
       end
       
       if uri.query

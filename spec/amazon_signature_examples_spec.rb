@@ -64,20 +64,24 @@ describe "Amazon signature examples" do
   #   ).should eq("9b2sXq0KfxsxHtdZkzx/9Ngqyh8=")
   # end
   
-  # TODO: !!!ALERT SPECIAL CASE!!! Add all the content tages and the X-Amx-Meta data
-  # it "matches with a CNAME style virtual hosted bucket uplad request with meta data." do
-  #   request_to_signature(
-  #     Time.utc(2007, 3, 27, 21, 06, 08),
-  #     "http://",
-  #     "PUT",
-  #     ,
-  #     { }
-  #   ).should eq("ilyl83RwaSoYIEdixDQcA4OnAnc=")    
-  # end
+  it "matches with a CNAME style virtual hosted bucket upload request with meta data." do
+    request_to_signature(
+      Time.utc(2007, 3, 27, 21, 6, 8),
+      "http://static.johnsmith.net:8080/db-backup.dat.gz",
+      "PUT",
+      "I can has content?",
+      { "Content-Type"                 => "application/x-download",
+        "x-amz-acl"                    => "public-read",
+        "X-Amz-Meta-ReviewedBy"        => "joe@johnsmith.net," +
+                                          "jane@johnsmith.net",
+        "X-Amz-Meta-FileChecksum"      => "0x02661779",
+        "X-Amz-Meta-ChecksumAlgorithm" => "crc32" }
+    ).should eq("ilyl83RwaSoYIEdixDQcA4OnAnc=")
+  end
   
   it "matches a list all my buckets request" do
     request_to_signature(
-      Time.utc(2007, 3, 28, 01, 29, 59),
+      Time.utc(2007, 3, 28, 1, 29, 59),
       "http://s3.amazonaws.com",
       "GET",
       nil,
@@ -85,9 +89,9 @@ describe "Amazon signature examples" do
     ).should eq("qGdzdERIC03wnaRNKh6OqZehG9s=")    
   end
 
-  it "matches a examile of Unicode Keys" do
+  it "matches a example of Unicode Keys" do
     request_to_signature(
-      Time.utc(2007, 3, 28, 01, 49, 49),
+      Time.utc(2007, 3, 28, 1, 49, 49),
       "http://s3.amazonaws.com/dictionary/fran%C3%A7ais/pr%c3%a9f%c3%a8re",
       "GET",
       nil,
